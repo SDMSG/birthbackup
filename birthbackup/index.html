@@ -1,0 +1,2761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>For You ♡</title>
+
+<style>
+
+/* =====================================================
+   GENERAL
+===================================================== */
+
+*{
+  box-sizing:border-box;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  margin:0;
+  background:#fff8f5;
+  color:#403436;
+  font-family:Georgia,serif;
+  overflow-x:hidden;
+}
+
+button{
+  font:inherit;
+  cursor:pointer;
+}
+
+.screen{
+  min-height:100vh;
+  display:none;
+  place-items:center;
+  padding:25px;
+}
+
+.screen.active{
+  display:grid;
+}
+
+.page{
+  min-height:100vh;
+  padding:90px 20px;
+}
+
+.page-inner{
+  width:min(1050px,100%);
+  margin:auto;
+}
+
+
+/* =====================================================
+   FLOATING HEARTS
+===================================================== */
+
+.float{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  overflow:hidden;
+  z-index:20;
+}
+
+.float span{
+  position:absolute;
+  bottom:-30px;
+  opacity:.2;
+  animation:rise linear infinite;
+}
+
+@keyframes rise{
+
+  from{
+    transform:translateY(0) rotate(0);
+  }
+
+  to{
+    transform:translateY(-110vh) rotate(40deg);
+  }
+
+}
+
+
+/* =====================================================
+   BUTTONS
+===================================================== */
+
+.btn{
+  border:1px solid #ddbfc4;
+  background:#f3d5da;
+  color:#5b4146;
+  padding:12px 22px;
+  border-radius:999px;
+  transition:.25s;
+}
+
+.btn:hover{
+  transform:translateY(-3px);
+  box-shadow:0 8px 20px rgba(100,60,70,.12);
+}
+
+.secondary{
+  background:white;
+}
+
+
+/* =====================================================
+   OPENING
+===================================================== */
+
+#entrance{
+
+  background:
+    radial-gradient(
+      circle at 20% 20%,
+      #f8dce2,
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 85% 80%,
+      #e8e0f3,
+      transparent 30%
+    ),
+    #fffaf6;
+
+}
+
+.card{
+
+  width:min(650px,100%);
+
+  padding:50px 30px;
+
+  text-align:center;
+
+  background:rgba(255,255,255,.92);
+
+  border:1px solid #ead8da;
+
+  border-radius:28px;
+
+  box-shadow:
+    0 25px 60px
+    rgba(70,45,50,.15);
+
+  animation:fadeUp 1s ease;
+
+}
+
+@keyframes fadeUp{
+
+  from{
+    opacity:0;
+    transform:translateY(25px);
+  }
+
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+}
+
+.mini{
+
+  text-transform:uppercase;
+
+  letter-spacing:.2em;
+
+  font:11px Arial,sans-serif;
+
+  color:#92777c;
+
+}
+
+h1{
+
+  font-size:
+    clamp(45px,9vw,75px);
+
+  font-weight:500;
+
+  line-height:.95;
+
+  margin:20px 0;
+
+}
+
+.card p{
+
+  color:#92777c;
+
+  line-height:1.7;
+
+}
+
+.buttons{
+
+  display:flex;
+
+  justify-content:center;
+
+  gap:15px;
+
+  flex-wrap:wrap;
+
+}
+
+#noBtn{
+  position:relative;
+}
+
+#answerText{
+
+  min-height:25px;
+
+  margin-top:18px;
+
+  color:#a36d76;
+
+  font-style:italic;
+
+}
+
+
+/* =====================================================
+   ENVELOPE
+===================================================== */
+
+#reveal{
+
+  background:
+    radial-gradient(
+      circle at 15% 15%,
+      #f4d9de,
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 90% 85%,
+      #e4e9f4,
+      transparent 30%
+    ),
+    #faf6f2;
+
+}
+
+.envelope-wrap{
+
+  text-align:center;
+
+}
+
+.envelope-wrap h2{
+
+  font-size:42px;
+
+  font-weight:500;
+
+}
+
+.envelope{
+
+  width:min(360px,85vw);
+
+  height:240px;
+
+  margin:40px auto 30px;
+
+  position:relative;
+
+  cursor:pointer;
+
+  perspective:800px;
+
+}
+
+.env-back{
+
+  position:absolute;
+
+  inset:0;
+
+  background:#e6b4bd;
+
+  border-radius:8px;
+
+  box-shadow:
+    0 20px 45px
+    rgba(70,45,50,.2);
+
+}
+
+.env-letter{
+
+  position:absolute;
+
+  left:8%;
+
+  right:8%;
+
+  bottom:8%;
+
+  height:78%;
+
+  padding:25px;
+
+  background:#fffdf9;
+
+  border:1px solid #eadbd5;
+
+  z-index:2;
+
+  transition:.9s;
+
+}
+
+.env-letter strong{
+
+  display:block;
+
+  font-size:22px;
+
+  margin-bottom:10px;
+
+}
+
+.env-front{
+
+  position:absolute;
+
+  inset:0;
+
+  background:#d99fa9;
+
+  clip-path:polygon(
+    0 0,
+    50% 58%,
+    100% 0,
+    100% 100%,
+    0 100%
+  );
+
+  z-index:4;
+
+}
+
+.env-flap{
+
+  position:absolute;
+
+  inset:0;
+
+  background:#eab6bd;
+
+  clip-path:polygon(
+    0 0,
+    100% 0,
+    50% 60%
+  );
+
+  transform-origin:top;
+
+  transition:.8s;
+
+  z-index:5;
+
+}
+
+.envelope.open .env-flap{
+
+  transform:rotateX(180deg);
+
+}
+
+.envelope.open .env-letter{
+
+  transform:translateY(-115px);
+
+}
+
+.seal{
+
+  position:absolute;
+
+  z-index:8;
+
+  left:50%;
+
+  top:50%;
+
+  transform:
+    translate(-50%,-50%);
+
+  width:55px;
+
+  height:55px;
+
+  border-radius:50%;
+
+  display:grid;
+
+  place-items:center;
+
+  background:#fff3f4;
+
+  border:2px solid #c98691;
+
+  color:#9d606b;
+
+  font-size:25px;
+
+  transition:.4s;
+
+}
+
+.envelope.open .seal{
+
+  opacity:0;
+
+}
+
+
+/* =====================================================
+   SCRAPBOOK
+===================================================== */
+
+#scrapbook{
+  display:none;
+}
+
+#scrapbook.show{
+  display:block;
+}
+
+
+/* =====================================================
+   HEADINGS
+===================================================== */
+
+.page-title{
+
+  text-align:center;
+
+  margin-bottom:45px;
+
+}
+
+.page-title small{
+
+  text-transform:uppercase;
+
+  letter-spacing:.2em;
+
+  font:11px Arial,sans-serif;
+
+  color:#92777c;
+
+}
+
+.page-title h2{
+
+  font-size:
+    clamp(38px,7vw,58px);
+
+  font-weight:500;
+
+  margin:10px 0;
+
+}
+
+.page-title p{
+
+  color:#92777c;
+
+  line-height:1.7;
+
+}
+
+
+/* =====================================================
+   MEMORIES
+===================================================== */
+
+#memories{
+
+  background:
+    radial-gradient(
+      circle at 10% 20%,
+      #fae3e6,
+      transparent 25%
+    ),
+    #fffaf6;
+
+}
+
+.photos{
+
+  display:grid;
+
+  grid-template-columns:
+    repeat(3,1fr);
+
+  gap:28px;
+
+}
+
+.photo-card{
+
+  position:relative;
+
+  background:#fffdf9;
+
+  padding:14px 14px 18px;
+
+  border:1px solid #eaded9;
+
+  box-shadow:
+    0 20px 45px
+    rgba(70,45,50,.12);
+
+  transition:.35s;
+
+}
+
+.photo-card:nth-child(1){
+  transform:rotate(-2deg);
+}
+
+.photo-card:nth-child(2){
+  transform:
+    rotate(2deg)
+    translateY(20px);
+}
+
+.photo-card:nth-child(3){
+  transform:
+    rotate(-1deg)
+    translateY(8px);
+}
+
+.photo-card:hover{
+
+  transform:
+    translateY(-8px)
+    rotate(0);
+
+}
+
+.tape{
+
+  position:absolute;
+
+  width:78px;
+
+  height:22px;
+
+  top:-11px;
+
+  left:50%;
+
+  transform:
+    translateX(-50%);
+
+  background:
+    rgba(235,207,173,.7);
+
+  z-index:5;
+
+}
+
+.photo{
+
+  aspect-ratio:1;
+
+  overflow:hidden;
+
+  background:#f0dce0;
+
+}
+
+.photo img{
+
+  width:100%;
+
+  height:100%;
+
+  object-fit:cover;
+
+  display:block;
+
+}
+
+.caption{
+
+  padding:15px 5px 0;
+
+  line-height:1.5;
+
+}
+
+.memory-stamp{
+
+  display:inline-block;
+
+  margin-top:25px;
+
+  padding:8px 13px;
+
+  border:1px dashed #cfaeb4;
+
+  border-radius:8px;
+
+  color:#9c7178;
+
+}
+
+
+/* =====================================================
+   MUSIC
+===================================================== */
+
+#music{
+
+  background:
+    radial-gradient(
+      circle at 85% 15%,
+      #e8e0f3,
+      transparent 28%
+    ),
+    #f4f0f7;
+
+}
+
+.music-list{
+
+  display:grid;
+
+  gap:25px;
+
+  width:min(750px,100%);
+
+  margin:auto;
+
+}
+
+.song-card{
+
+  background:#fffdfb;
+
+  padding:20px;
+
+  border-radius:20px;
+
+  border:1px solid #e7d8dc;
+
+  box-shadow:
+    0 15px 35px
+    rgba(70,45,50,.1);
+
+  transition:.3s;
+
+}
+
+.song-card:hover{
+
+  transform:translateY(-4px);
+
+}
+
+.song-number{
+
+  text-transform:uppercase;
+
+  letter-spacing:.15em;
+
+  font:11px Arial,sans-serif;
+
+  color:#9a777e;
+
+  margin-bottom:8px;
+
+}
+
+.song-title{
+
+  font-size:20px;
+
+  margin-bottom:15px;
+
+  color:#5b4146;
+
+}
+
+.spotify-player{
+
+  width:100%;
+
+  border:0;
+
+  border-radius:12px;
+
+}
+
+
+/* =====================================================
+   LETTER
+===================================================== */
+
+#letter{
+
+  background:
+    radial-gradient(
+      circle at 12% 75%,
+      #e3eee5,
+      transparent 25%
+    ),
+    radial-gradient(
+      circle at 90% 20%,
+      #f8e0e3,
+      transparent 25%
+    ),
+    #fffaf5;
+
+}
+
+.letter-wrap{
+
+  width:min(720px,100%);
+
+  margin:auto;
+
+  text-align:center;
+
+}
+
+.letter-card{
+
+  background:#fffdf8;
+
+  border:1px solid #e7ddd3;
+
+  box-shadow:
+    0 25px 55px
+    rgba(70,45,50,.12);
+
+  padding:45px 30px;
+
+  position:relative;
+
+  min-height:300px;
+
+}
+
+.letter-card:before{
+
+  content:"";
+
+  position:absolute;
+
+  inset:13px;
+
+  border:1px dashed #dfc9c0;
+
+  pointer-events:none;
+
+}
+
+#letterBtn{
+
+  position:relative;
+
+  z-index:5;
+
+  margin-bottom:25px;
+
+}
+
+.letter-hidden{
+
+  display:none;
+
+  position:relative;
+
+  z-index:2;
+
+  text-align:left;
+
+  font-size:19px;
+
+  line-height:1.9;
+
+  margin-top:20px;
+
+  padding:10px 15px 5px;
+
+}
+
+.letter-hidden.show{
+
+  display:block;
+
+  animation:letterReveal .8s ease;
+
+}
+
+.letter-hidden p{
+
+  margin:0 0 22px;
+
+}
+
+@keyframes letterReveal{
+
+  from{
+
+    opacity:0;
+
+    transform:translateY(20px);
+
+  }
+
+  to{
+
+    opacity:1;
+
+    transform:translateY(0);
+
+  }
+
+}
+
+.signature{
+
+  text-align:right;
+
+  font-style:italic;
+
+  color:#9c6870;
+
+}
+
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+.bottom-nav{
+
+  display:flex;
+
+  justify-content:center;
+
+  gap:10px;
+
+  flex-wrap:wrap;
+
+  margin-top:45px;
+
+}
+
+.page-btn{
+
+  border:1px solid #dcc8ca;
+
+  background:white;
+
+  color:#6c5055;
+
+  border-radius:999px;
+
+  padding:10px 17px;
+
+}
+
+
+/* =====================================================
+   GIFT PAGE
+===================================================== */
+
+#gift{
+
+  min-height:100vh;
+
+  background:
+    radial-gradient(
+      circle at 20% 20%,
+      #f9dfe4,
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 85% 75%,
+      #e7dff2,
+      transparent 32%
+    ),
+    #fffaf7;
+
+}
+
+.gift-page{
+
+  min-height:100vh;
+
+  display:flex;
+
+  flex-direction:column;
+
+  align-items:center;
+
+  justify-content:center;
+
+  text-align:center;
+
+  position:relative;
+
+  overflow:hidden;
+
+}
+
+.gift-heading{
+
+  transition:
+    opacity .6s ease,
+    transform .6s ease;
+
+  z-index:2;
+
+}
+
+.gift-heading small{
+
+  text-transform:uppercase;
+
+  letter-spacing:.22em;
+
+  font:11px Arial,sans-serif;
+
+  color:#98777d;
+
+}
+
+.gift-heading h2{
+
+  font-size:
+    clamp(35px,7vw,55px);
+
+  font-weight:500;
+
+  margin:15px 0 5px;
+
+  color:#574348;
+
+}
+
+.gift-heading p{
+
+  color:#9b7e82;
+
+}
+
+
+/* =====================================================
+   GIFT SCENE
+===================================================== */
+
+.gift-scene{
+
+  position:relative;
+
+  width:min(600px,95vw);
+
+  height:560px;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:flex-end;
+
+  flex-direction:column;
+
+}
+
+
+/* GLOW */
+
+.gift-glow{
+
+  position:absolute;
+
+  width:300px;
+
+  height:300px;
+
+  border-radius:50%;
+
+  background:#f4cbd2;
+
+  filter:blur(60px);
+
+  opacity:.35;
+
+  animation:
+    giftGlow 3s ease-in-out infinite;
+
+}
+
+@keyframes giftGlow{
+
+  0%,100%{
+
+    transform:scale(.8);
+
+    opacity:.25;
+
+  }
+
+  50%{
+
+    transform:scale(1.15);
+
+    opacity:.5;
+
+  }
+
+}
+
+
+/* =====================================================
+   BOX
+===================================================== */
+
+.gift-box-wrapper{
+
+  position:relative;
+
+  width:220px;
+
+  height:170px;
+
+  cursor:pointer;
+
+  z-index:5;
+
+  margin-bottom:45px;
+
+  transition:
+    transform .4s ease;
+
+}
+
+.gift-box-wrapper:hover{
+
+  transform:
+    translateY(-8px);
+
+}
+
+.gift-body{
+
+  position:absolute;
+
+  bottom:0;
+
+  left:10px;
+
+  width:200px;
+
+  height:125px;
+
+  background:#d9939f;
+
+  border-radius:5px;
+
+  box-shadow:
+    0 25px 40px
+    rgba(70,40,50,.2);
+
+  overflow:hidden;
+
+}
+
+.body-ribbon{
+
+  position:absolute;
+
+  width:32px;
+
+  height:100%;
+
+  left:50%;
+
+  transform:
+    translateX(-50%);
+
+  background:#f5d7b5;
+
+}
+
+.gift-lid{
+
+  position:absolute;
+
+  top:10px;
+
+  left:0;
+
+  width:220px;
+
+  height:45px;
+
+  background:#e5a8b2;
+
+  border-radius:6px;
+
+  z-index:4;
+
+  transition:
+    transform 1s
+    cubic-bezier(.2,.8,.2,1);
+
+  transform-origin:
+    left bottom;
+
+  box-shadow:
+    0 8px 15px
+    rgba(70,40,50,.12);
+
+}
+
+.lid-ribbon{
+
+  position:absolute;
+
+  width:100%;
+
+  height:15px;
+
+  top:15px;
+
+  background:#f5d7b5;
+
+}
+
+
+/* BOW */
+
+.bow{
+
+  position:absolute;
+
+  width:120px;
+
+  height:70px;
+
+  top:-43px;
+
+  left:50%;
+
+  transform:
+    translateX(-50%);
+
+  z-index:8;
+
+  transition:
+    transform 1s
+    cubic-bezier(.2,.8,.2,1);
+
+}
+
+.bow-left,
+.bow-right{
+
+  position:absolute;
+
+  width:62px;
+
+  height:42px;
+
+  background:#efc0c7;
+
+  border-radius:
+    50% 50% 20% 50%;
+
+  top:15px;
+
+}
+
+.bow-left{
+
+  left:0;
+
+  transform:
+    rotate(-25deg);
+
+}
+
+.bow-right{
+
+  right:0;
+
+  transform:
+    scaleX(-1)
+    rotate(-25deg);
+
+}
+
+.bow-middle{
+
+  position:absolute;
+
+  width:30px;
+
+  height:30px;
+
+  border-radius:50%;
+
+  background:#d48692;
+
+  left:50%;
+
+  top:30px;
+
+  transform:
+    translateX(-50%);
+
+  z-index:3;
+
+}
+
+
+/* =====================================================
+   GIFT OPEN ANIMATION
+===================================================== */
+
+.gift-box-wrapper.opened
+.gift-lid{
+
+  transform:
+    translateY(-155px)
+    translateX(20px)
+    rotate(-16deg);
+
+}
+
+.gift-box-wrapper.opened
+.bow{
+
+  transform:
+    translateX(-50%)
+    translateY(-160px)
+    rotate(-12deg);
+
+}
+
+.gift-box-wrapper.opened{
+
+  animation:
+    boxPop .8s ease;
+
+}
+
+@keyframes boxPop{
+
+  0%{
+    transform:scale(1);
+  }
+
+  35%{
+    transform:scale(1.12);
+  }
+
+  65%{
+    transform:scale(.96);
+  }
+
+  100%{
+    transform:scale(1);
+  }
+
+}
+
+
+/* =====================================================
+   IMPORTANT:
+   MESSAGE IS ABOVE THE LID
+===================================================== */
+
+.gift-message{
+
+  position:absolute;
+
+  left:50%;
+
+  bottom:220px;
+
+  width:min(560px,90vw);
+
+  transform:
+    translateX(-50%)
+    translateY(220px)
+    scale(.5);
+
+  opacity:0;
+
+  pointer-events:none;
+
+  /* ABOVE EVERYTHING IN THE BOX */
+  z-index:20;
+
+  transition:
+    opacity .8s ease,
+    transform 1.4s
+    cubic-bezier(.16,1,.3,1);
+
+}
+
+.gift-message.show{
+
+  opacity:1;
+
+  transform:
+    translateX(-50%)
+    translateY(-170px)
+    scale(1);
+
+  z-index:20;
+
+}
+
+.gift-message h1{
+
+  font-size:
+    clamp(42px,9vw,75px);
+
+  line-height:1.05;
+
+  font-weight:500;
+
+  color:#9b606b;
+
+  margin:12px 0;
+
+  text-shadow:
+    0 5px 25px
+    rgba(160,90,105,.15);
+
+}
+
+.gift-message h1 span{
+
+  color:#b27680;
+
+}
+
+.gift-message p{
+
+  max-width:450px;
+
+  margin:15px auto;
+
+  color:#81686d;
+
+  line-height:1.7;
+
+  font-size:17px;
+
+}
+
+.gift-sparkles{
+
+  color:#c9959d;
+
+  font-size:22px;
+
+  letter-spacing:5px;
+
+  animation:
+    sparkle 1.8s infinite;
+
+}
+
+@keyframes sparkle{
+
+  0%,100%{
+    opacity:.5;
+    transform:scale(.9);
+  }
+
+  50%{
+    opacity:1;
+    transform:scale(1.1);
+  }
+
+}
+
+.message-heart{
+
+  font-size:55px;
+
+  color:#d58c98;
+
+  animation:
+    heartbeat 1.5s infinite;
+
+}
+
+@keyframes heartbeat{
+
+  0%,100%{
+    transform:scale(1);
+  }
+
+  50%{
+    transform:scale(1.2);
+  }
+
+}
+
+
+/* =====================================================
+   GIFT BUTTON
+===================================================== */
+
+.gift-open-button{
+
+  position:relative;
+
+  z-index:10;
+
+  margin-bottom:20px;
+
+}
+
+.gift-open-button.hidden{
+
+  opacity:0;
+
+  pointer-events:none;
+
+}
+
+
+/* =====================================================
+   GIFT FOOTER
+===================================================== */
+
+.gift-bottom{
+
+  position:absolute;
+
+  bottom:30px;
+
+  opacity:0;
+
+  transform:translateY(15px);
+
+  transition:
+    opacity .8s ease,
+    transform .8s ease;
+
+  color:#9b7a80;
+
+  z-index:25;
+
+}
+
+.gift-bottom.show{
+
+  opacity:1;
+
+  transform:translateY(0);
+
+}
+
+
+/* =====================================================
+   CONFETTI
+===================================================== */
+
+.confetti{
+
+  position:fixed;
+
+  top:-20px;
+
+  z-index:100;
+
+  pointer-events:none;
+
+  animation:
+    fall 2.7s linear forwards;
+
+}
+
+@keyframes fall{
+
+  to{
+
+    transform:
+      translateY(110vh)
+      rotate(620deg);
+
+    opacity:0;
+
+  }
+
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+footer{
+
+  text-align:center;
+
+  padding:50px 20px;
+
+  color:#9b8587;
+
+  background:#f6eee9;
+
+}
+
+
+/* =====================================================
+   MOBILE — IMPORTANT
+===================================================== */
+
+@media(max-width:760px){
+
+  .screen{
+    padding:18px;
+  }
+
+  .page{
+    padding:70px 15px;
+  }
+
+
+  /* MOBILE MEMORIES */
+
+  .photos{
+
+    grid-template-columns:1fr;
+
+    width:min(450px,100%);
+
+    margin:auto;
+
+  }
+
+  .photo-card:nth-child(1),
+  .photo-card:nth-child(2),
+  .photo-card:nth-child(3){
+
+    transform:none;
+
+  }
+
+
+  /* MOBILE LETTER */
+
+  .letter-card{
+
+    padding:
+      40px 20px;
+
+    min-height:330px;
+
+  }
+
+  .letter-hidden{
+
+    font-size:17px;
+
+    line-height:1.8;
+
+    padding:
+      5px 8px;
+
+  }
+
+
+  /* MOBILE GIFT */
+
+  .gift-scene{
+
+    width:100%;
+
+    height:600px;
+
+  }
+
+  .gift-heading h2{
+
+    font-size:35px;
+
+  }
+
+  .gift-heading p{
+
+    margin-bottom:0;
+
+  }
+
+
+  /*
+    Move the message high enough
+    that the lid can NEVER cover it.
+  */
+
+  .gift-message.show{
+
+    transform:
+      translateX(-50%)
+      translateY(-125px)
+      scale(.88);
+
+    z-index:20;
+
+  }
+
+
+  .gift-message{
+
+    bottom:225px;
+
+    width:94vw;
+
+  }
+
+
+  .gift-message h1{
+
+    font-size:42px;
+
+  }
+
+
+  .gift-message p{
+
+    font-size:15px;
+
+    max-width:330px;
+
+  }
+
+
+  /*
+    Keep the actual box
+    underneath the message.
+  */
+
+  .gift-box-wrapper{
+
+    z-index:5;
+
+    transform-origin:center bottom;
+
+  }
+
+
+  /*
+    The lid stays behind
+    the birthday message.
+  */
+
+  .gift-lid{
+
+    z-index:4;
+
+  }
+
+  .bow{
+
+    z-index:8;
+
+  }
+
+
+  /*
+    Put the final little message
+    safely below everything.
+  */
+
+  .gift-bottom{
+
+    bottom:15px;
+
+    font-size:14px;
+
+  }
+
+
+  .gift-open-button{
+
+    margin-bottom:10px;
+
+  }
+
+}
+
+
+/* EXTRA SMALL PHONES */
+
+@media(max-width:390px){
+
+  .gift-scene{
+
+    height:620px;
+
+  }
+
+  .gift-message.show{
+
+    transform:
+      translateX(-50%)
+      translateY(-105px)
+      scale(.78);
+
+  }
+
+  .gift-message h1{
+
+    font-size:38px;
+
+  }
+
+  .gift-message p{
+
+    font-size:14px;
+
+  }
+
+}
+
+
+/* =====================================================
+   VERY SMALL SCREEN HEIGHTS
+===================================================== */
+
+@media(
+  max-height:700px
+) and (max-width:760px){
+
+  .gift-scene{
+
+    height:560px;
+
+  }
+
+  .gift-message.show{
+
+    transform:
+      translateX(-50%)
+      translateY(-105px)
+      scale(.76);
+
+  }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- FLOATING HEARTS -->
+
+<div class="float">
+
+<span style="left:7%;animation-duration:12s;font-size:24px">♡</span>
+
+<span style="left:18%;animation-duration:15s;font-size:16px">✦</span>
+
+<span style="left:31%;animation-duration:11s;font-size:20px">♡</span>
+
+<span style="left:48%;animation-duration:17s;font-size:18px">✧</span>
+
+<span style="left:64%;animation-duration:13s;font-size:23px">♡</span>
+
+<span style="left:78%;animation-duration:16s;font-size:16px">✦</span>
+
+<span style="left:91%;animation-duration:12s;font-size:21px">♡</span>
+
+</div>
+
+
+<!-- =====================================================
+     OPENING
+===================================================== -->
+
+<section
+  id="entrance"
+  class="screen active"
+>
+
+<div class="card">
+
+<div class="mini">
+a tiny birthday surprise
+</div>
+
+<h1>
+Before we begin…
+<br>
+<span style="color:#a36d76">♡</span>
+</h1>
+
+<p>
+I made something small for you.
+But first, I need to ask you
+one very important question…
+</p>
+
+<h2>
+Do you want to open your birthday surprise?
+</h2>
+
+<div class="buttons">
+
+<button
+  class="btn"
+  id="yesBtn"
+>
+Yes ♡
+</button>
+
+<button
+  class="btn secondary"
+  id="noBtn"
+>
+No
+</button>
+
+</div>
+
+<div id="answerText"></div>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     ENVELOPE
+===================================================== -->
+
+<section
+  id="reveal"
+  class="screen"
+>
+
+<div class="envelope-wrap">
+
+<div class="mini">
+page one
+</div>
+
+<h2>
+I made this for you.
+</h2>
+
+<p>
+Tap the envelope to open it.
+</p>
+
+<div
+  class="envelope"
+  id="envelope"
+>
+
+<div class="env-back"></div>
+
+<div class="env-letter">
+
+<strong>
+A little surprise ♡
+</strong>
+
+<span>
+There are a few memories,
+some music, and a letter
+waiting inside.
+</span>
+
+</div>
+
+<div class="env-flap"></div>
+
+<div class="env-front"></div>
+
+<div class="seal">
+♡
+</div>
+
+</div>
+
+<button
+  class="btn"
+  id="openScrapbook"
+>
+Open the scrapbook
+</button>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     SCRAPBOOK
+===================================================== -->
+
+<div id="scrapbook">
+
+
+<!-- MEMORIES -->
+
+<section
+  class="page"
+  id="memories"
+>
+
+<div class="page-inner">
+
+<div class="page-title">
+
+<small>
+chapter one · memories
+</small>
+
+<h2>
+Little pieces of us
+</h2>
+
+<p>
+A few pictures I wanted
+to keep in one little place.
+</p>
+
+</div>
+
+<div class="photos">
+
+
+<div class="photo-card">
+
+<div class="tape"></div>
+
+<div class="photo">
+
+<img
+  src="images/photo1.jpg"
+  alt="Birthday memory 1"
+>
+
+</div>
+
+<div class="caption">
+A moment worth keeping forever. ♡
+</div>
+
+</div>
+
+
+<div class="photo-card">
+
+<div class="tape"></div>
+
+<div class="photo">
+
+<img
+  src="images/photo2.jpg"
+  alt="Birthday memory 2"
+>
+
+</div>
+
+<div class="caption">
+One of those little moments
+that makes me smile.
+</div>
+
+</div>
+
+
+<div class="photo-card">
+
+<div class="tape"></div>
+
+<div class="photo">
+
+<img
+  src="images/photo3.jpg"
+  alt="Birthday memory 3"
+>
+
+</div>
+
+<div class="caption">
+Another page in our
+little scrapbook. ♡
+</div>
+
+</div>
+
+</div>
+
+<div style="text-align:center">
+
+<span class="memory-stamp">
+saved with love · birthday edition
+</span>
+
+</div>
+
+<div class="bottom-nav">
+
+<button
+  class="page-btn"
+  data-scroll="music"
+>
+Next: Music ♫
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- MUSIC -->
+
+<section
+  class="page"
+  id="music"
+>
+
+<div class="page-inner">
+
+<div class="page-title">
+
+<small>
+chapter two · soundtrack
+</small>
+
+<h2>
+Our little songs ♡
+</h2>
+
+<p>
+Three songs for the birthday scrapbook.
+</p>
+
+</div>
+
+<div class="music-list">
+
+
+<div class="song-card">
+
+<div class="song-number">
+song one
+</div>
+
+<div class="song-title">
+Your first song ♫
+</div>
+
+<iframe
+  class="spotify-player"
+  src="https://open.spotify.com/embed/track/2MJlhN2OockKCadeGS4AEP?utm_source=generator"
+  height="152"
+  frameborder="0"
+  allowfullscreen
+  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+  loading="lazy">
+</iframe>
+
+</div>
+
+
+<div class="song-card">
+
+<div class="song-number">
+song two
+</div>
+
+<div class="song-title">
+Your second song ♫
+</div>
+
+<iframe
+  class="spotify-player"
+  src="https://open.spotify.com/embed/track/4jyyma8YdFC4S4llusSFRu?utm_source=generator"
+  height="152"
+  frameborder="0"
+  allowfullscreen
+  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+  loading="lazy">
+</iframe>
+
+</div>
+
+
+<div class="song-card">
+
+<div class="song-number">
+song three
+</div>
+
+<div class="song-title">
+Your third song ♫
+</div>
+
+<iframe
+  class="spotify-player"
+  src="https://open.spotify.com/embed/track/0bmVH05tjN9jVh3kB1TfpR?utm_source=generator"
+  height="152"
+  frameborder="0"
+  allowfullscreen
+  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+  loading="lazy">
+</iframe>
+
+</div>
+
+</div>
+
+<div class="bottom-nav">
+
+<button
+  class="page-btn"
+  data-scroll="memories"
+>
+← Memories
+</button>
+
+<button
+  class="page-btn"
+  data-scroll="letter"
+>
+Next: Letter ♡
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- LETTER -->
+
+<section
+  class="page"
+  id="letter"
+>
+
+<div class="page-inner">
+
+<div class="page-title">
+
+<small>
+chapter three · from me to you
+</small>
+
+<h2>
+One last thing…
+</h2>
+
+<p>
+The final page is hidden until
+you open the letter.
+</p>
+
+</div>
+
+<div class="letter-wrap">
+
+<div class="letter-card">
+
+<button
+  class="btn"
+  id="letterBtn"
+>
+Open the letter ♡
+</button>
+
+<div
+  class="letter-hidden"
+  id="letterText"
+>
+
+<p>
+Happy birthday, beautiful. ♡
+</p>
+
+<p>
+I hope this new year of your life
+brings you so many reasons to smile,
+little adventures you never expected,
+peaceful days, and moments you'll
+want to remember forever.
+</p>
+
+<p>
+I wanted to make you something
+you could open and wander through —
+a tiny collection of memories,
+music, and words for your birthday.
+</p>
+
+<p>
+Most importantly, I hope today
+reminds you how loved and
+appreciated you are.
+</p>
+
+<p>
+Happy birthday. ♡
+</p>
+
+<div class="signature">
+— with love
+</div>
+
+</div>
+
+</div>
+
+<div class="bottom-nav">
+
+<button
+  class="page-btn"
+  data-scroll="music"
+>
+← Music
+</button>
+
+<button
+  class="page-btn"
+  data-scroll="gift"
+>
+Final surprise 🎁
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+     FINAL GIFT
+===================================================== -->
+
+<section
+  class="page"
+  id="gift"
+>
+
+<div class="gift-page">
+
+<div class="gift-heading">
+
+<small>
+the final surprise
+</small>
+
+<h2>
+One last little thing…
+</h2>
+
+<p>
+Tap the gift. ♡
+</p>
+
+</div>
+
+
+<div class="gift-scene">
+
+<div class="gift-glow"></div>
+
+
+<!-- MESSAGE -->
+
+<div
+  class="gift-message"
+  id="giftMessage"
+>
+
+<div class="gift-sparkles">
+✦　♡　✦
+</div>
+
+<h1>
+
+Happy Birthday,
+<br>
+
+<span>
+my sweet ♡
+</span>
+
+</h1>
+
+<p>
+
+I hope your day is filled with
+beautiful moments, laughter,
+happiness and lots of love.
+
+</p>
+
+<div class="message-heart">
+♡
+</div>
+
+</div>
+
+
+<!-- BOX -->
+
+<div
+  class="gift-box-wrapper"
+  id="giftBox"
+>
+
+<div class="gift-lid">
+
+<div class="lid-ribbon"></div>
+
+</div>
+
+<div class="gift-body">
+
+<div class="body-ribbon"></div>
+
+</div>
+
+<div class="bow">
+
+<span class="bow-left"></span>
+
+<span class="bow-right"></span>
+
+<span class="bow-middle"></span>
+
+</div>
+
+</div>
+
+
+<button
+  class="btn gift-open-button"
+  id="giftButton"
+>
+Open your gift 🎁
+</button>
+
+
+<div
+  class="gift-bottom"
+  id="giftBottom"
+>
+
+<p>
+Made especially for you. ♡
+</p>
+
+<button
+  class="btn"
+  id="confettiButton"
+>
+More confetti ✦
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<footer>
+
+made with ♡ · birthday scrapbook
+
+</footer>
+
+</div>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script>
+
+
+/* =====================================================
+   YES BUTTON
+===================================================== */
+
+const entrance =
+document.getElementById("entrance");
+
+const reveal =
+document.getElementById("reveal");
+
+const scrapbook =
+document.getElementById("scrapbook");
+
+
+document.getElementById("yesBtn")
+.addEventListener("click", () => {
+
+  entrance.classList.remove("active");
+
+  reveal.classList.add("active");
+
+  burst(20);
+
+});
+
+
+/* =====================================================
+   NO BUTTON
+===================================================== */
+
+let noClicks = 0;
+
+document.getElementById("noBtn")
+.addEventListener("click", () => {
+
+  noClicks++;
+
+  const messages = [
+
+    "Are you sure? 🥺",
+
+    "Really? There's a tiny surprise inside…",
+
+    "Okay okay… one more chance? ♡",
+
+    "I think you might want to press Yes 😭"
+
+  ];
+
+  document.getElementById("answerText")
+  .textContent =
+    messages[
+      Math.min(
+        noClicks - 1,
+        messages.length - 1
+      )
+    ];
+
+  const x =
+    Math.random() * 120 - 60;
+
+  const y =
+    Math.random() * 70 - 35;
+
+  document.getElementById("noBtn")
+  .style.transform =
+    `translate(${x}px,${y}px)`;
+
+});
+
+
+/* =====================================================
+   ENVELOPE
+===================================================== */
+
+const envelope =
+document.getElementById("envelope");
+
+envelope.addEventListener(
+  "click",
+  () => {
+
+    envelope.classList.toggle("open");
+
+  }
+);
+
+
+document.getElementById("openScrapbook")
+.addEventListener("click", () => {
+
+  reveal.classList.remove("active");
+
+  scrapbook.classList.add("show");
+
+  document.getElementById("memories")
+  .scrollIntoView({
+    behavior:"smooth"
+  });
+
+  burst(35);
+
+});
+
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+document.querySelectorAll(
+  "[data-scroll]"
+)
+.forEach(button => {
+
+  button.addEventListener(
+    "click",
+    () => {
+
+      const destination =
+        document.getElementById(
+          button.dataset.scroll
+        );
+
+      if(destination){
+
+        destination.scrollIntoView({
+          behavior:"smooth"
+        });
+
+      }
+
+    }
+  );
+
+});
+
+
+/* =====================================================
+   LETTER
+===================================================== */
+
+const letterButton =
+document.getElementById("letterBtn");
+
+const letterText =
+document.getElementById("letterText");
+
+
+letterButton.addEventListener(
+  "click",
+  () => {
+
+    letterText.classList.toggle("show");
+
+    if(
+      letterText.classList.contains("show")
+    ){
+
+      letterButton.textContent =
+        "Close the letter";
+
+      burst(25);
+
+    }else{
+
+      letterButton.textContent =
+        "Open the letter ♡";
+
+    }
+
+  }
+);
+
+
+/* =====================================================
+   GIFT
+===================================================== */
+
+const giftBox =
+document.getElementById("giftBox");
+
+const giftButton =
+document.getElementById("giftButton");
+
+const giftMessage =
+document.getElementById("giftMessage");
+
+const giftBottom =
+document.getElementById("giftBottom");
+
+const confettiButton =
+document.getElementById("confettiButton");
+
+
+let giftOpened = false;
+
+
+function openGift(){
+
+  if(giftOpened) return;
+
+  giftOpened = true;
+
+
+  /* Open box */
+
+  giftBox.classList.add("opened");
+
+
+  /* Hide button */
+
+  giftButton.classList.add("hidden");
+
+
+  /* Let lid move first */
+
+  setTimeout(() => {
+
+    giftMessage.classList.add("show");
+
+  },500);
+
+
+  /* Show final little line */
+
+  setTimeout(() => {
+
+    giftBottom.classList.add("show");
+
+  },1700);
+
+
+  /* Celebration */
+
+  setTimeout(() => {
+
+    burst(100);
+
+  },600);
+
+}
+
+
+giftBox.addEventListener(
+  "click",
+  openGift
+);
+
+
+giftButton.addEventListener(
+  "click",
+  openGift
+);
+
+
+confettiButton.addEventListener(
+  "click",
+  () => {
+
+    burst(80);
+
+  }
+);
+
+
+/* =====================================================
+   CONFETTI
+===================================================== */
+
+function burst(amount){
+
+  const symbols = [
+    "♡",
+    "♥",
+    "✦",
+    "✧",
+    "•"
+  ];
+
+  for(
+    let i = 0;
+    i < amount;
+    i++
+  ){
+
+    const item =
+      document.createElement("div");
+
+    item.className =
+      "confetti";
+
+    item.textContent =
+      symbols[
+        Math.floor(
+          Math.random()
+          *
+          symbols.length
+        )
+      ];
+
+    item.style.left =
+      Math.random() * 100 + "vw";
+
+    item.style.fontSize =
+      (
+        10 +
+        Math.random() * 15
+      ) + "px";
+
+    item.style.animationDuration =
+      (
+        1.8 +
+        Math.random() * 1.8
+      ) + "s";
+
+    item.style.color =
+      [
+        "#d78c99",
+        "#b59ac8",
+        "#c9a76e",
+        "#8eaa92"
+      ][
+        Math.floor(
+          Math.random() * 4
+        )
+      ];
+
+    document.body.appendChild(item);
+
+    setTimeout(
+      () => item.remove(),
+      4200
+    );
+
+  }
+
+}
+
+</script>
+
+</body>
+</html>
